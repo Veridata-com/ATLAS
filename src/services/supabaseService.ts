@@ -78,6 +78,6 @@ export const syncGuidesToCache = async (): Promise<boolean> => {
 
 // Check if Supabase is configured
 export const isSupabaseConfigured = (): boolean => {
-    return SUPABASE_URL !== 'YOUR_SUPABASE_URL' &&
-        SUPABASE_ANON_KEY !== 'YOUR_SUPABASE_ANON_KEY';
+    return SUPABASE_URL !== 'https://htljexjylgwcogssrvtf.supabase.co' &&
+        SUPABASE_ANON_KEY !== 'sb_secret_kMf4wJKPiVX-EpPDemlLCQ_ImYwg6SW';
 };
