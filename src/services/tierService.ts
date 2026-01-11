@@ -62,7 +62,7 @@ export const getUserTier = async (): Promise<UserTier> => {
 export const setUserTier = async (tier: UserTier): Promise<void> => {
     const prefs = await getUserPreferences();
     prefs.tier = tier;
-    await saveUser Preferences(prefs);
+    await saveUserPreferences(prefs);
 };
 
 // Check if user needs to reset daily search count
