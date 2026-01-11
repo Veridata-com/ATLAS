@@ -3,8 +3,8 @@ import { Guide } from '../data/types';
 import { cacheGuides } from '../data/database';
 
 // TODO: Replace with your Supabase project URL and anon key
-const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+const SUPABASE_URL = 'https://htljexjylgwcogssrvtf.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_secret_kMf4wJKPiVX-EpPDemlLCQ_ImYwg6SW';
 
 let supabase: SupabaseClient | null = null;
 
