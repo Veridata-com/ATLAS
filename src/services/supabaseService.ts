@@ -4,7 +4,7 @@ import { cacheGuides } from '../data/database';
 
 // TODO: Replace with your Supabase project URL and anon key
 const SUPABASE_URL = 'https://htljexjylgwcogssrvtf.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_secret_kMf4wJKPiVX-EpPDemlLCQ_ImYwg6SW';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh0bGpleGp5bGd3Y29nc3NydnRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgxNDMzMDgsImV4cCI6MjA4MzcxOTMwOH0.ATqn8QdV3UMdlUXc8MLuv1KVSsrCcexb5eO2sZNbztg';
 
 let supabase: SupabaseClient | null = null;
 
@@ -78,6 +78,6 @@ export const syncGuidesToCache = async (): Promise<boolean> => {
 
 // Check if Supabase is configured
 export const isSupabaseConfigured = (): boolean => {
-    return SUPABASE_URL !== 'https://htljexjylgwcogssrvtf.supabase.co' &&
-        SUPABASE_ANON_KEY !== 'sb_secret_kMf4wJKPiVX-EpPDemlLCQ_ImYwg6SW';
+    return SUPABASE_URL !== 'YOUR_SUPABASE_URL' &&
+        SUPABASE_ANON_KEY !== 'YOUR_SUPABASE_ANON_KEY';
 };
