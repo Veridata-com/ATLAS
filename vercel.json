@@ -1,8 +1,8 @@
 {
-    "buildCommand": "npm run build",
+    "buildCommand": "npx expo export -p web",
     "outputDirectory": "dist",
-    "devCommand": "npm run web",
-    "installCommand": "npm install",
+    "devCommand": "npx expo start --web",
+    "installCommand": "npm install && chmod -R 755 node_modules/.bin",
     "framework": null,
     "rewrites": [
         {
