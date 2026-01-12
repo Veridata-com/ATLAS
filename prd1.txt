@@ -1,0 +1,323 @@
+📘 PRODUCT REQUIREMENTS DOCUMENT (PRD)
+
+PROJECT NAME:
+Atlas (working name)
+
+PRODUCT TYPE:
+Mobile-first knowledge & guidance app (iOS / Android / Web)
+
+STATUS:
+Core app infrastructure already built.
+This PRD defines UI/UX, search behavior, content presentation, and refinement layers.
+
+PRIMARY GOAL:
+Provide the fastest, most trustworthy path from user confusion → clarity using
+science-backed guides, with a Google-like discovery experience and premium readability.
+
+CORE PRINCIPLES:
+- Cognitive load minimization
+- Trust through structure and consistency
+- Familiar interaction patterns
+- Calm, premium, non-distracting UI
+
+
+⸻
+
+1. USER & PSYCHOLOGY FOUNDATIONS
+
+1.1 Target User Mental State
+
+Users open the app when:
+	•	They feel confused, overwhelmed, or uncertain
+	•	They want a clear answer, not a conversation
+	•	They do NOT want to “research”
+
+Design must:
+	•	Reduce anxiety
+	•	Reward curiosity immediately
+	•	Avoid choice paralysis
+
+⸻
+
+1.2 Science-Backed UX Principles (Applied)
+
+Hick’s Law
+→ Fewer choices = faster decisions
+→ Limit visible actions per screen
+
+Fitts’s Law
+→ Large tappable areas, especially search and categories
+
+Cognitive Fluency
+→ Familiar layouts (Google-like results)
+→ Consistent typography and spacing
+
+Chunking
+→ Content broken into visual sections, not text blocks
+
+Progressive Disclosure
+→ Show only what’s needed at each moment
+
+⸻
+
+2. INFORMATION ARCHITECTURE (GLOBAL)
+
+2.1 Core Sections
+	•	Search (primary)
+	•	Categories (secondary)
+	•	Saved guides
+	•	Settings
+
+NO social feeds
+NO timelines
+NO infinite scroll outside search results
+
+⸻
+
+3. MAIN SEARCH SCREEN (HOME)
+
+3.1 Layout Structure
+
+[ Header ]
+"What do you want to improve?"
+Subtext: "Science-backed guides. No noise."
+
+[ Search Bar ]
+Full width, immediately focused
+
+[ Category Chips ]
+Scrollable, large, tappable
+
+[ Recent / Saved ]
+Only if exists
+
+
+⸻
+
+3.2 Search Bar Requirements
+	•	Auto-focus on app open
+	•	Single input field
+	•	No icons inside input
+	•	Soft border or subtle elevation
+	•	Keyboard optimized for text input
+
+Placeholder text rotation (randomized):
+	•	“Search fat loss, sleep, focus…”
+	•	“Type a goal or problem”
+	•	“What are you trying to improve today?”
+
+⸻
+
+4. SEARCH SYSTEM (GOOGLE-LIKE BEHAVIOR)
+
+4.1 Core Philosophy
+
+Search results must feel:
+	•	Familiar
+	•	Predictable
+	•	Ranked by relevance, not recency
+
+User expectation:
+
+“The first result is probably what I want.”
+
+⸻
+
+4.2 Search Matching Logic
+
+Inputs:
+	•	Guide title
+	•	Keywords
+	•	Synonyms
+	•	Category tags
+	•	Partial word matches (error tolerance)
+
+Ranking priority:
+	1.	Exact title match
+	2.	Keyword relevance score
+	3.	Category relevance
+	4.	Popularity / saves (if implemented later)
+
+⸻
+
+4.3 Search Results UI (Google-Inspired)
+
+Each result card contains:
+
+Title (bold, dark)
+One-line summary (lighter text)
+Meta row:
+• Category
+• Read time
+• Evidence-based label
+
+Example:
+
+Lose fat without losing muscle
+Evidence-based strategy for active individuals
+Fat Loss • 7 min • Science-backed
+
+⸻
+
+4.4 Search UX Behaviors
+	•	Instant results (no “loading” screen)
+	•	Typing refines results live
+	•	Empty state suggests alternatives:
+	•	“Try: sleep, stress, endurance…”
+
+⸻
+
+5. GUIDE VIEW PAGE (READABILITY & DESIGN)
+
+5.1 Visual Philosophy
+
+Goal:
+
+Not “notes app”
+Not “blog”
+But curated scientific clarity
+
+⸻
+
+5.2 Page Layout
+
+[ Title ]
+[ Subheading ]
+
+[ Outcome Card ]
+"What you’ll gain from this guide"
+
+[ Content Sections ]
+Styled blocks
+
+[ Action Box ]
+Clear steps
+
+[ Sources ]
+Always visible
+
+
+⸻
+
+5.3 Design Elements (CRUCIAL)
+
+Section Cards
+	•	Light background tint
+	•	Rounded corners
+	•	Generous padding
+	•	Clear headers
+
+Highlight Blocks
+Used sparingly:
+	•	Key takeaway
+	•	Warning
+	•	Common mistake
+
+Color rules:
+	•	One accent color only
+	•	Never more than 2 highlights per screen
+
+⸻
+
+5.4 Typography & Spacing Rules
+	•	Max line width (no wide paragraphs)
+	•	Large line height
+	•	Paragraphs ≤ 3 lines
+	•	Bullets preferred over text
+
+⸻
+
+5.5 Action Box (Mandatory)
+
+Always ends with:
+
+IF YOU WANT RESULTS:
+✓ Do this
+✓ Avoid this
+✓ Focus on this
+
+This improves:
+	•	Retention
+	•	Perceived value
+	•	Practical usefulness
+
+⸻
+
+6. CONTENT STANDARDS
+
+6.1 Writing Style
+	•	Neutral
+	•	Calm
+	•	Confident
+	•	No hype
+	•	No emojis
+
+Avoid:
+	•	“Studies show…” without citation
+	•	Overly long explanations
+
+⸻
+
+6.2 Source Display
+	•	Always visible
+	•	Not hidden
+	•	Not collapsible
+
+Trust is non-negotiable.
+
+⸻
+
+7. RETENTION MECHANISMS (NON-ANNOYING)
+
+Allowed:
+	•	Saved guides
+	•	Recently viewed
+	•	Gentle reminders (later)
+
+Not allowed:
+	•	Push spam
+	•	Streak pressure
+	•	Gamification
+
+Retention comes from trust, not dopamine tricks.
+
+⸻
+
+8. PERFORMANCE & TECH CONSTRAINTS
+	•	Guides stored in database, not bundled in app
+	•	Lazy-loaded content
+	•	Offline support optional later
+	•	Search index optimized for speed
+
+⸻
+
+9. WHAT THIS APP IS NOT
+
+Explicit exclusions:
+	•	No AI chat interface
+	•	No user-generated content
+	•	No commenting
+	•	No “community”
+
+Clarity > engagement hacks.
+
+⸻
+
+10. SUCCESS METRICS
+
+Primary:
+	•	Search → guide open rate
+	•	Time to first useful result
+	•	Save rate
+
+Secondary:
+	•	Return sessions
+	•	Guide completion rate
+
+⸻
+
+END OF PRD
+
+---
+
+

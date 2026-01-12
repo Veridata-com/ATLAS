@@ -1,8 +1,8 @@
 import React from 'react';
-import { Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Search, BookOpen, LayoutGrid, Settings } from 'lucide-react-native';
 import { HomeScreen } from '../screens/HomeScreen';
 import { GuideViewScreen } from '../screens/GuideViewScreen';
 import { SavedGuidesScreen } from '../screens/SavedGuidesScreen';
@@ -13,14 +13,16 @@ import { textStyles } from '../styles/typography';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
+const RootStack = createNativeStackNavigator();
 
-const TabIcon: React.FC<{ icon: string }> = ({ icon }) => (
-    <Text style={{ fontSize: 24 }}>{icon}</Text>
-);
+// Cast to any to avoid React 19 type errors with Navigation 7
+const StackNavigator = Stack.Navigator as any;
+const TabNavigatorComponent = Tab.Navigator as any;
+const RootNavigator = RootStack.Navigator as any;
 
-// Home stack with GuideView
+// Home stack (Now Search) behavior
 const HomeStack = () => (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <StackNavigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="HomeMain" component={HomeScreen} />
         <Stack.Screen
             name="GuideView"
@@ -33,12 +35,12 @@ const HomeStack = () => (
                 headerStyle: { backgroundColor: colors.background },
             }}
         />
-    </Stack.Navigator>
+    </StackNavigator>
 );
 
-// Categories stack with GuideView
+// Categories stack
 const CategoriesStack = () => (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <StackNavigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="CategoriesMain" component={CategoriesScreen} />
         <Stack.Screen
             name="GuideView"
@@ -51,12 +53,12 @@ const CategoriesStack = () => (
                 headerStyle: { backgroundColor: colors.background },
             }}
         />
-    </Stack.Navigator>
+    </StackNavigator>
 );
 
-// Saved stack with GuideView
+// Saved stack (Now My Guides)
 const SavedStack = () => (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <StackNavigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="SavedMain" component={SavedGuidesScreen} />
         <Stack.Screen
             name="GuideView"
@@ -69,65 +71,76 @@ const SavedStack = () => (
                 headerStyle: { backgroundColor: colors.background },
             }}
         />
-    </Stack.Navigator>
+    </StackNavigator>
 );
+
+const TabNavigator = () => {
+    return (
+        <TabNavigatorComponent
+            screenOptions={{
+                headerShown: false,
+                tabBarActiveTintColor: colors.primary,
+                tabBarInactiveTintColor: colors.textLight, // More subtle inactive color
+                tabBarStyle: {
+                    backgroundColor: colors.backgroundElevated,
+                    borderTopColor: colors.border,
+                    borderTopWidth: 1,
+                    paddingTop: 8,
+                    paddingBottom: 8,
+                    height: 60,
+                },
+                tabBarLabelStyle: {
+                    fontSize: textStyles.caption.fontSize,
+                    fontWeight: textStyles.label.fontWeight as any,
+                    marginTop: 4,
+                },
+            }}
+        >
+            <Tab.Screen
+                name="Saved"
+                component={SavedStack}
+                options={{
+                    tabBarLabel: 'My Guides',
+                    tabBarIcon: ({ color, size }: { color: string; size: number }) => <BookOpen size={size} color={color} />,
+                }}
+            />
+            <Tab.Screen
+                name="Home"
+                component={HomeStack}
+                options={{
+                    tabBarLabel: 'Search',
+                    tabBarIcon: ({ color, size }: { color: string; size: number }) => <Search size={size} color={color} />,
+                }}
+            />
+            <Tab.Screen
+                name="Categories"
+                component={CategoriesStack}
+                options={{
+                    tabBarLabel: 'Categories',
+                    tabBarIcon: ({ color, size }: { color: string; size: number }) => <LayoutGrid size={size} color={color} />,
+                }}
+            />
+        </TabNavigatorComponent>
+    );
+};
 
 export const AppNavigator: React.FC = () => {
     return (
         <NavigationContainer>
-            <Tab.Navigator
-                screenOptions={{
-                    headerShown: false,
-                    tabBarActiveTintColor: colors.primary,
-                    tabBarInactiveTintColor: colors.textLight,
-                    tabBarStyle: {
-                        backgroundColor: colors.backgroundElevated,
-                        borderTopColor: colors.border,
-                        borderTopWidth: 1,
-                        paddingTop: 8,
-                        paddingBottom: 8,
-                        height: 60,
-                    },
-                    tabBarLabelStyle: {
-                        fontSize: textStyles.caption.fontSize,
-                        fontWeight: textStyles.label.fontWeight as any,
-                        marginTop: 4,
-                    },
-                }}
-            >
-                <Tab.Screen
-                    name="Home"
-                    component={HomeStack}
-                    options={{
-                        tabBarLabel: 'Home',
-                        tabBarIcon: () => <TabIcon icon="🏠" />,
-                    }}
-                />
-                <Tab.Screen
-                    name="Categories"
-                    component={CategoriesStack}
-                    options={{
-                        tabBarLabel: 'Categories',
-                        tabBarIcon: () => <TabIcon icon="📚" />,
-                    }}
-                />
-                <Tab.Screen
-                    name="Saved"
-                    component={SavedStack}
-                    options={{
-                        tabBarLabel: 'Saved',
-                        tabBarIcon: () => <TabIcon icon="🔖" />,
-                    }}
-                />
-                <Tab.Screen
+            <RootNavigator screenOptions={{ headerShown: false }}>
+                <RootStack.Screen name="MainTabs" component={TabNavigator} />
+                <RootStack.Screen
                     name="Settings"
                     component={SettingsScreen}
                     options={{
-                        tabBarLabel: 'Settings',
-                        tabBarIcon: () => <TabIcon icon="⚙️" />,
+                        headerShown: true,
+                        headerTitle: 'Settings',
+                        headerBackTitle: 'Back',
+                        headerTintColor: colors.primary,
+                        headerStyle: { backgroundColor: colors.background },
                     }}
                 />
-            </Tab.Navigator>
+            </RootNavigator>
         </NavigationContainer>
     );
 };

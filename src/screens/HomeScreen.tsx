@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, StyleSheet, Alert, RefreshControl, ActivityIndicator, Platform } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Alert, RefreshControl, ActivityIndicator, Platform, TouchableOpacity } from 'react-native';
+import { Settings } from 'lucide-react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { SearchBar } from '../components/SearchBar';
 import { GuideCard } from '../components/GuideCard';
@@ -133,7 +134,12 @@ export const HomeScreen: React.FC = () => {
                 <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} tintColor={colors.primary} />
             }
         >
-            <Text style={styles.header}>Atlas</Text>
+            <View style={styles.headerContainer}>
+                <Text style={styles.header}>Atlas</Text>
+                <TouchableOpacity onPress={() => navigation.navigate('Settings')} style={styles.settingsButton}>
+                    <Settings color={colors.text} size={24} />
+                </TouchableOpacity>
+            </View>
             <SearchBar onSearch={handleSearch} value={searchQuery} />
 
             {searchQuery && searchResults.length > 0 && (
@@ -182,12 +188,25 @@ const styles = StyleSheet.create({
         fontSize: textStyles.body.fontSize,
         color: colors.textSecondary,
     },
+    headerContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 32,
+        position: 'relative',
+    },
     header: {
         fontSize: textStyles.h1.fontSize,
         fontWeight: textStyles.h1.fontWeight as any,
         color: colors.text,
-        marginBottom: 32,
         textAlign: 'center',
+    },
+    settingsButton: {
+        position: 'absolute',
+        right: 0,
+        top: 0,
+        bottom: 0,
+        justifyContent: 'center',
     },
     section: {
         marginBottom: 40,

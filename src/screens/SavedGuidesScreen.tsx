@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Settings } from 'lucide-react-native';
 import { View, Text, FlatList, StyleSheet, Alert, TouchableOpacity, Platform } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { GuideCard } from '../components/GuideCard';
@@ -95,7 +96,12 @@ export const SavedGuidesScreen: React.FC = () => {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.headerTitle}>Saved Guides</Text>
+                <View style={styles.headerRow}>
+                    <Text style={styles.headerTitle}>Saved Guides</Text>
+                    <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
+                        <Settings color={colors.text} size={24} />
+                    </TouchableOpacity>
+                </View>
                 {userTier === UserTier.Free && (
                     <Text style={styles.limitText}>
                         {savedGuides.length} / 5 guides saved ({remainingSlots} remaining)
@@ -123,6 +129,12 @@ const styles = StyleSheet.create({
         padding: 20,
         paddingTop: 60,
         backgroundColor: colors.background,
+    },
+    headerRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 8,
     },
     headerTitle: {
         fontSize: textStyles.h1.fontSize,

@@ -3,8 +3,8 @@ import { Guide } from '../data/types';
 import { cacheGuides } from '../data/database';
 
 // TODO: Replace with your Supabase project URL and anon key
-const SUPABASE_URL = 'https://htljexjylgwcogssrvtf.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh0bGpleGp5bGd3Y29nc3NydnRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgxNDMzMDgsImV4cCI6MjA4MzcxOTMwOH0.ATqn8QdV3UMdlUXc8MLuv1KVSsrCcexb5eO2sZNbztg';
+const SUPABASE_URL: string = 'https://htljexjylgwcogssrvtf.supabase.co';
+const SUPABASE_ANON_KEY: string = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh0bGpleGp5bGd3Y29nc3NydnRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgxNDMzMDgsImV4cCI6MjA4MzcxOTMwOH0.ATqn8QdV3UMdlUXc8MLuv1KVSsrCcexb5eO2sZNbztg';
 
 let supabase: SupabaseClient | null = null;
 

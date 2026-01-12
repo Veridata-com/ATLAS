@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { Settings } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
 import { CategoryTile } from '../components/CategoryTile';
 import { GuideCard } from '../components/GuideCard';
@@ -72,7 +73,12 @@ export const CategoriesScreen: React.FC = () => {
         return (
             <ScrollView style={styles.container} contentContainerStyle={styles.content}>
                 <View style={styles.header}>
-                    <Text style={styles.headerTitle}>{selectedCategory}</Text>
+                    <View style={styles.headerTitleRow}>
+                        <Text style={styles.headerTitle}>{selectedCategory}</Text>
+                        <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
+                            <Settings color={colors.text} size={24} />
+                        </TouchableOpacity>
+                    </View>
                     <Text style={styles.backButton} onPress={handleBackToCategories}>
                         ← Back to Categories
                     </Text>
@@ -93,7 +99,12 @@ export const CategoriesScreen: React.FC = () => {
 
     return (
         <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-            <Text style={styles.headerTitle}>Categories</Text>
+            <View style={styles.headerRow}>
+                <Text style={styles.headerTitle}>Categories</Text>
+                <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
+                    <Settings color={colors.text} size={24} />
+                </TouchableOpacity>
+            </View>
             <Text style={styles.subtitle}>Browse guides by topic</Text>
 
             <View style={styles.categoriesContainer}>
@@ -127,6 +138,17 @@ const styles = StyleSheet.create({
     },
     header: {
         marginBottom: 24,
+    },
+    headerTitleRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    headerRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 8,
     },
     headerTitle: {
         fontSize: textStyles.h1.fontSize,
