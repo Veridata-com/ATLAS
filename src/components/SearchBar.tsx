@@ -11,16 +11,31 @@ interface SearchBarProps {
 }
 
 export const SearchBar: React.FC<SearchBarProps> = ({
-    placeholder = 'What do you want to understand or improve?',
+    placeholder: initialPlaceholder = 'What do you want to understand or improve?',
     onSearch,
     value = '',
 }) => {
     const [searchText, setSearchText] = useState(value);
     const [remainingSearches, setRemainingSearches] = useState<number | null>(null);
     const [isPremium, setIsPremium] = useState(false);
+    const [placeholder, setPlaceholder] = useState(initialPlaceholder);
 
     useEffect(() => {
         loadSearchInfo();
+
+        // Randomize placeholder interactions
+        const placeholders = [
+            "Search fat loss, sleep, focus...",
+            "Type a goal or problem",
+            "What are you trying to improve today?",
+            "How to sleep better",
+            "Reduce anxiety naturally",
+            "Improve focus for work"
+        ];
+
+        // Pick a random placeholder on mount
+        const random = placeholders[Math.floor(Math.random() * placeholders.length)];
+        setPlaceholder(random);
     }, []);
 
     const loadSearchInfo = async () => {
@@ -49,6 +64,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
                 autoCorrect={false}
                 autoCapitalize="none"
                 returnKeyType="search"
+                autoFocus={true}
             />
             {!isPremium && remainingSearches !== null && (
                 <Text style={styles.searchCounter}>

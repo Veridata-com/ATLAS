@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, Platform } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { GuideSection } from '../components/GuideSection';
+import { ActionBox } from '../components/ActionBox';
 import { Guide } from '../data/types';
 import { getCachedGuideById } from '../data/database';
 import { saveGuide, unsaveGuide, checkIfGuideSaved } from '../services/storageService';
@@ -106,22 +107,47 @@ export const GuideViewScreen: React.FC = () => {
 
     return (
         <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-            <Text style={styles.title}>{guide.title}</Text>
-            <Text style={styles.summary}>{guide.summary}</Text>
-
-            <GuideSection title="What science says" content={guide.whatScienceSays} isBulletList={true} />
-            <GuideSection title="What to do" content={guide.whatToDo} isBulletList={true} />
-            <GuideSection title="Who this is for" content={guide.whoThisIsFor} isBulletList={false} />
-            <GuideSection title="What NOT to do" content={guide.whatNotToDo} isBulletList={true} />
-
-            <View style={styles.sourcesSection}>
-                <Text style={styles.sourcesTitle}>Sources</Text>
-                {guide.sources.map((source, index) => (
-                    <Text key={index} style={styles.sourceText}>
-                        {index + 1}. {source}
-                    </Text>
-                ))}
+            <View style={styles.header}>
+                <View style={styles.categoryBadge}>
+                    <Text style={styles.categoryText}>{guide.category}</Text>
+                </View>
+                <Text style={styles.title}>{guide.title}</Text>
+                {guide.whoThisIsFor && (
+                    <Text style={styles.whoThisIsFor}>For: {guide.whoThisIsFor}</Text>
+                )}
             </View>
+
+            {/* Outcome Card */}
+            <View style={styles.outcomeCard}>
+                <Text style={styles.outcomeTitle}>What you'll gain</Text>
+                <Text style={styles.outcomeText}>{guide.summary}</Text>
+            </View>
+
+            {/* Content Sections */}
+            {guide.whatScienceSays.length > 0 && (
+                <GuideSection
+                    title="What Science Says"
+                    content={guide.whatScienceSays}
+                />
+            )}
+
+            {/* Action Box */}
+            <ActionBox
+                whatToDo={guide.whatToDo}
+                whatNotToDo={guide.whatNotToDo}
+            />
+
+            {/* Sources */}
+            {guide.sources.length > 0 && (
+                <View style={styles.sourcesContainer}>
+                    <Text style={styles.sourcesTitle}>Sources</Text>
+                    {guide.sources.map((source, index) => (
+                        <Text key={index} style={styles.sourceText}>
+                            {index + 1}. {source}
+                        </Text>
+                    ))}
+                </View>
+            )}
 
             <TouchableOpacity
                 style={[styles.saveButton, isSaved && styles.savedButton]}
@@ -130,7 +156,7 @@ export const GuideViewScreen: React.FC = () => {
                 activeOpacity={0.8}
             >
                 <Text style={[styles.saveButtonText, isSaved && styles.savedButtonText]}>
-                    {isSaving ? 'Saving...' : isSaved ? 'Saved ✓' : 'Save guide'}
+                    {isSaving ? 'Saving...' : isSaved ? 'Saved to My Guides' : 'Save Guide'}
                 </Text>
             </TouchableOpacity>
         </ScrollView>
@@ -152,52 +178,98 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: colors.background,
     },
+    header: {
+        marginBottom: 24,
+    },
+    categoryBadge: {
+        alignSelf: 'flex-start',
+        backgroundColor: colors.backgroundElevated,
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        borderRadius: 16,
+        marginBottom: 12,
+        borderWidth: 1,
+        borderColor: colors.border,
+    },
+    categoryText: {
+        fontSize: textStyles.caption.fontSize,
+        color: colors.textSecondary,
+        fontWeight: textStyles.label.fontWeight as any,
+        textTransform: 'uppercase',
+        letterSpacing: 0.5,
+    },
     title: {
         fontSize: textStyles.display.fontSize,
         fontWeight: textStyles.display.fontWeight as any,
-        lineHeight: textStyles.display.fontSize * 1.2,
         color: colors.text,
-        marginBottom: 16,
+        marginBottom: 8,
+        lineHeight: textStyles.display.lineHeight * textStyles.display.fontSize,
     },
-    summary: {
+    whoThisIsFor: {
         fontSize: textStyles.bodyLarge.fontSize,
-        lineHeight: textStyles.bodyLarge.fontSize * 1.6,
         color: colors.textSecondary,
-        marginBottom: 32,
+        marginTop: 4,
         fontStyle: 'italic',
     },
-    sourcesSection: {
+    outcomeCard: {
+        backgroundColor: colors.primary,
+        borderRadius: 16,
+        padding: 24,
         marginBottom: 32,
     },
-    sourcesTitle: {
-        fontSize: textStyles.h2.fontSize,
-        fontWeight: textStyles.h2.fontWeight as any,
-        color: colors.text,
-        marginBottom: 16,
+    outcomeTitle: {
+        fontSize: textStyles.label.fontSize,
+        fontWeight: textStyles.label.fontWeight as any,
+        color: 'rgba(255, 255, 255, 0.9)',
+        marginBottom: 8,
+        textTransform: 'uppercase',
+        letterSpacing: 1,
     },
-    sourceText: {
-        fontSize: textStyles.bodySmall.fontSize,
-        lineHeight: textStyles.bodySmall.fontSize * 1.6,
+    outcomeText: {
+        fontSize: textStyles.h3.fontSize,
+        fontWeight: textStyles.h3.fontWeight as any,
+        color: colors.textInverse,
+        lineHeight: textStyles.h3.fontSize * 1.4,
+    },
+    sourcesContainer: {
+        marginTop: 16,
+        marginBottom: 32,
+        paddingTop: 24,
+        borderTopWidth: 1,
+        borderTopColor: colors.border,
+    },
+    sourcesTitle: {
+        fontSize: textStyles.label.fontSize,
+        fontWeight: textStyles.label.fontWeight as any,
         color: colors.textSecondary,
         marginBottom: 12,
+        textTransform: 'uppercase',
+    },
+    sourceText: {
+        fontSize: textStyles.caption.fontSize,
+        color: colors.textSecondary,
+        marginBottom: 4,
+        lineHeight: textStyles.caption.fontSize * 1.5,
     },
     saveButton: {
         backgroundColor: colors.primary,
+        padding: 16,
         borderRadius: 12,
-        paddingVertical: 16,
-        paddingHorizontal: 32,
         alignItems: 'center',
+        marginTop: 8,
         marginBottom: 40,
     },
     savedButton: {
-        backgroundColor: colors.success,
+        backgroundColor: colors.backgroundElevated,
+        borderWidth: 1,
+        borderColor: colors.primary,
     },
     saveButtonText: {
+        color: colors.textInverse,
         fontSize: textStyles.button.fontSize,
         fontWeight: textStyles.button.fontWeight as any,
-        color: colors.textInverse,
     },
     savedButtonText: {
-        color: colors.textInverse,
+        color: colors.primary,
     },
 });

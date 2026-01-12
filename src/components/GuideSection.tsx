@@ -45,20 +45,25 @@ export const GuideSection: React.FC<GuideSectionProps> = ({
 
 const styles = StyleSheet.create({
     section: {
-        marginBottom: 32,
+        marginBottom: 24,
+        backgroundColor: colors.backgroundElevated,
+        borderRadius: 16,
+        padding: 24,
+        borderWidth: 1,
+        borderColor: colors.border,
     },
     title: {
-        fontSize: textStyles.h2.fontSize,
-        fontWeight: textStyles.h2.fontWeight as any,
+        fontSize: textStyles.h3.fontSize,
+        fontWeight: textStyles.h3.fontWeight as any,
         color: colors.text,
         marginBottom: 16,
     },
     contentContainer: {
-        gap: 8,
+        gap: 12,
     },
     text: {
         fontSize: textStyles.body.fontSize,
-        lineHeight: textStyles.body.fontSize * textStyles.body.lineHeight,
+        lineHeight: textStyles.body.fontSize * 1.6,
         color: colors.text,
     },
     textMargin: {
@@ -66,7 +71,7 @@ const styles = StyleSheet.create({
     },
     bulletItem: {
         flexDirection: 'row',
-        marginBottom: 12,
+        marginBottom: 8,
         paddingRight: 8,
     },
     bullet: {
@@ -78,7 +83,7 @@ const styles = StyleSheet.create({
     bulletText: {
         flex: 1,
         fontSize: textStyles.body.fontSize,
-        lineHeight: textStyles.body.fontSize * textStyles.body.lineHeight,
+        lineHeight: textStyles.body.fontSize * 1.6,
         color: colors.text,
     },
 });

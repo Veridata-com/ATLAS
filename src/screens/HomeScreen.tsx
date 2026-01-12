@@ -4,7 +4,7 @@ import { Settings } from 'lucide-react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { SearchBar } from '../components/SearchBar';
 import { GuideCard } from '../components/GuideCard';
-import { Guide, SearchResult } from '../data/types';
+import { Guide, SearchResult, Category } from '../data/types';
 import { getCachedGuides } from '../data/database';
 import { searchGuides, getPopularGuides, getRecentlyAddedGuides } from '../services/searchService';
 import { getAllSavedGuides } from '../services/storageService';
@@ -135,12 +135,35 @@ export const HomeScreen: React.FC = () => {
             }
         >
             <View style={styles.headerContainer}>
-                <Text style={styles.header}>Atlas</Text>
+                <View>
+                    <Text style={styles.header}>What do you want to improve?</Text>
+                    <Text style={styles.subtext}>Science-backed guides. No noise.</Text>
+                </View>
                 <TouchableOpacity onPress={() => navigation.navigate('Settings')} style={styles.settingsButton}>
                     <Settings color={colors.text} size={24} />
                 </TouchableOpacity>
             </View>
             <SearchBar onSearch={handleSearch} value={searchQuery} />
+
+            {!searchQuery && (
+                <View style={styles.categoriesContainer}>
+                    <ScrollView
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={styles.categoriesContent}
+                    >
+                        {Object.values(Category).map((category) => (
+                            <TouchableOpacity
+                                key={category}
+                                style={styles.categoryChip}
+                                onPress={() => navigation.navigate('Categories', { screen: 'CategoriesMain', params: { initialCategory: category } })}
+                            >
+                                <Text style={styles.categoryChipText}>{category}</Text>
+                            </TouchableOpacity>
+                        ))}
+                    </ScrollView>
+                </View>
+            )}
 
             {searchQuery && searchResults.length > 0 && (
                 <View style={styles.section}>
@@ -190,23 +213,23 @@ const styles = StyleSheet.create({
     },
     headerContainer: {
         flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
         marginBottom: 32,
-        position: 'relative',
     },
     header: {
-        fontSize: textStyles.h1.fontSize,
-        fontWeight: textStyles.h1.fontWeight as any,
+        fontSize: textStyles.h2.fontSize,
+        fontWeight: textStyles.h2.fontWeight as any,
         color: colors.text,
-        textAlign: 'center',
+        marginBottom: 4,
+        maxWidth: '85%',
+    },
+    subtext: {
+        fontSize: textStyles.bodySmall.fontSize,
+        color: colors.textSecondary,
     },
     settingsButton: {
-        position: 'absolute',
-        right: 0,
-        top: 0,
-        bottom: 0,
-        justifyContent: 'center',
+        marginTop: 4,
     },
     section: {
         marginBottom: 40,
@@ -225,5 +248,25 @@ const styles = StyleSheet.create({
         fontSize: textStyles.body.fontSize,
         color: colors.textSecondary,
         textAlign: 'center',
+    },
+    categoriesContainer: {
+        marginBottom: 32,
+    },
+    categoriesContent: {
+        paddingRight: 20,
+        gap: 12,
+    },
+    categoryChip: {
+        backgroundColor: colors.backgroundElevated,
+        paddingHorizontal: 16,
+        paddingVertical: 12,
+        borderRadius: 24,
+        borderWidth: 1,
+        borderColor: colors.border,
+    },
+    categoryChipText: {
+        fontSize: textStyles.bodySmall.fontSize,
+        fontWeight: textStyles.label.fontWeight as any,
+        color: colors.text,
     },
 });
