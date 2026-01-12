@@ -177,13 +177,14 @@ export const HomeScreen: React.FC = () => {
             {searchQuery && searchResults.length === 0 && (
                 <View style={styles.emptyState}>
                     <Text style={styles.emptyText}>No guides found for "{searchQuery}"</Text>
+                    <Text style={[styles.emptyText, { marginTop: 8, opacity: 0.7 }]}>
+                        Try: sleep, stress, endurance...
+                    </Text>
                 </View>
             )}
 
             {!searchQuery && (
                 <>
-                    {renderSection('Popular right now', popularGuides)}
-                    {renderSection('Recently added', recentGuides)}
                     {renderSection('Saved guides', savedGuides)}
                 </>
             )}

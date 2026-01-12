@@ -77,6 +77,7 @@ const SavedStack = () => (
 const TabNavigator = () => {
     return (
         <TabNavigatorComponent
+            initialRouteName="Home"
             screenOptions={{
                 headerShown: false,
                 tabBarActiveTintColor: colors.primary,

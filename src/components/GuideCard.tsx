@@ -10,39 +10,38 @@ interface GuideCardProps {
 }
 
 export const GuideCard: React.FC<GuideCardProps> = ({ guide, onPress }) => {
-    const getCategoryColor = (category: string): string => {
-        switch (category) {
-            case 'Physical Health':
-                return colors.categoryPhysical;
-            case 'Mental Health':
-                return colors.categoryMental;
-            case 'Fitness & Training':
-                return colors.categoryFitness;
-            case 'Nutrition':
-                return colors.categoryNutrition;
-            case 'Sleep & Recovery':
-                return colors.categorySleep;
-            case 'Focus & Productivity':
-                return colors.categoryFocus;
-            case 'Stress & Anxiety':
-                return colors.categoryStress;
-            default:
-                return colors.primary;
-        }
+    const calculateReadTime = (guide: Guide): number => {
+        // Estimate read time: ~200 words per minute
+        const words = (
+            guide.summary +
+            guide.whatScienceSays.join(' ') +
+            guide.whatToDo.join(' ') +
+            (guide.whoThisIsFor || '')
+        ).split(/\s+/).length;
+
+        return Math.max(1, Math.ceil(words / 200));
     };
+
+    const readTime = calculateReadTime(guide);
 
     return (
         <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.7}>
             <View style={styles.content}>
-                <View style={[styles.categoryBadge, { backgroundColor: getCategoryColor(guide.category) }]}>
-                    <Text style={styles.categoryText}>{guide.category}</Text>
-                </View>
                 <Text style={styles.title} numberOfLines={2}>
                     {guide.title}
                 </Text>
-                <Text style={styles.summary} numberOfLines={2}>
+
+                <Text style={styles.summary} numberOfLines={1}>
                     {guide.summary}
                 </Text>
+
+                <View style={styles.metaRow}>
+                    <Text style={styles.metaText}>{guide.category}</Text>
+                    <Text style={styles.metaDot}>•</Text>
+                    <Text style={styles.metaText}>{readTime} min</Text>
+                    <Text style={styles.metaDot}>•</Text>
+                    <Text style={styles.metaText}>Science-backed</Text>
+                </View>
             </View>
         </TouchableOpacity>
     );
@@ -51,37 +50,43 @@ export const GuideCard: React.FC<GuideCardProps> = ({ guide, onPress }) => {
 const styles = StyleSheet.create({
     card: {
         backgroundColor: colors.backgroundElevated,
-        borderRadius: 12,
+        borderRadius: 8, // Less rounded to look more like a "result"
         marginBottom: 16,
-        borderWidth: 1,
+        paddingVertical: 4,
+        // No heavy borders, maybe just a bottom border or shadow if needed, 
+        // but PRD implies clean results. keeping subtle border for contrast.
+        borderBottomWidth: 1,
         borderColor: colors.border,
-        overflow: 'hidden',
     },
     content: {
-        padding: 20,
+        padding: 16,
     },
-    categoryBadge: {
-        alignSelf: 'flex-start',
-        paddingHorizontal: 12,
-        paddingVertical: 4,
-        borderRadius: 6,
-        marginBottom: 12,
-    },
-    categoryText: {
-        fontSize: textStyles.caption.fontSize,
-        color: colors.textInverse,
-        fontWeight: textStyles.label.fontWeight as any,
-    },
+    // Removed old categoryBadge styles
     title: {
         fontSize: textStyles.h3.fontSize,
-        fontWeight: textStyles.h3.fontWeight as any,
-        color: colors.text,
-        marginBottom: 8,
+        fontWeight: 'bold', // Google results are bold
+        color: colors.primary, // Or standard blue-ish if following Google exactly, but sticking to brand.
+        marginBottom: 4,
         lineHeight: textStyles.h3.fontSize * 1.3,
     },
     summary: {
         fontSize: textStyles.bodySmall.fontSize,
         color: colors.textSecondary,
+        marginBottom: 8,
         lineHeight: textStyles.bodySmall.fontSize * 1.5,
+    },
+    metaRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    metaText: {
+        fontSize: textStyles.caption.fontSize,
+        color: colors.textSecondary,
+        fontWeight: textStyles.label.fontWeight as any,
+    },
+    metaDot: {
+        fontSize: textStyles.caption.fontSize,
+        color: colors.textSecondary,
+        marginHorizontal: 6,
     },
 });

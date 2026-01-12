@@ -4,13 +4,13 @@ import { Guide, SearchResult } from '../data/types';
 // Configure Fuse.js for fuzzy search with weighted fields
 const fuseOptions = {
     keys: [
-        { name: 'title', weight: 0.6 }, // Highest priority
-        { name: 'tags', weight: 0.3 },  // Medium priority
+        { name: 'title', weight: 0.8 }, // Very High priority (Exact/Close match)
+        { name: 'tags', weight: 0.1 },  // Medium priority
         { name: 'summary', weight: 0.05 },
         { name: 'whatScienceSays', weight: 0.025 },
-        { name: 'whatToDo', weight: 0.025 }, // Lowest priority for body text
+        { name: 'whatToDo', weight: 0.025 },
     ],
-    threshold: 0.4, // Controls fuzziness (0 = exact match, 1 = match anything)
+    threshold: 0.3, // Lower threshold for stricter matching
     includeScore: true,
     minMatchCharLength: 2,
     ignoreLocation: true, // Search entire string
