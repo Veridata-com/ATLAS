@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
     saveGuideForOffline,
     removeSavedGuide,
@@ -69,6 +70,45 @@ export const getAllSavedGuides = async (): Promise<Guide[]> => {
         console.error('Failed to get saved guides:', error);
         return [];
     }
+};
+
+const PINNED_GUIDES_KEY = '@user_pinned_guides';
+
+export const getPinnedGuideIds = async (): Promise<string[]> => {
+    try {
+        const jsonValue = await AsyncStorage.getItem(PINNED_GUIDES_KEY);
+        return jsonValue != null ? JSON.parse(jsonValue) : [];
+    } catch (e) {
+        console.error('Failed to fetch pinned guides', e);
+        return [];
+    }
+};
+
+export const pinGuide = async (guideId: string): Promise<void> => {
+    try {
+        const currentPinned = await getPinnedGuideIds();
+        if (!currentPinned.includes(guideId)) {
+            const newPinned = [...currentPinned, guideId];
+            await AsyncStorage.setItem(PINNED_GUIDES_KEY, JSON.stringify(newPinned));
+        }
+    } catch (e) {
+        console.error('Failed to pin guide', e);
+    }
+};
+
+export const unpinGuide = async (guideId: string): Promise<void> => {
+    try {
+        const currentPinned = await getPinnedGuideIds();
+        const newPinned = currentPinned.filter(id => id !== guideId);
+        await AsyncStorage.setItem(PINNED_GUIDES_KEY, JSON.stringify(newPinned));
+    } catch (e) {
+        console.error('Failed to unpin guide', e);
+    }
+};
+
+export const isGuidePinned = async (guideId: string): Promise<boolean> => {
+    const pinned = await getPinnedGuideIds();
+    return pinned.includes(guideId);
 };
 
 // Get saved guides count

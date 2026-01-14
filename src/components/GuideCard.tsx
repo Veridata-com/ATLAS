@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Pin } from 'lucide-react-native';
 import { Guide } from '../data/types';
 import { colors } from '../styles/colors';
 import { textStyles } from '../styles/typography';
@@ -7,9 +8,11 @@ import { textStyles } from '../styles/typography';
 interface GuideCardProps {
     guide: Guide;
     onPress: () => void;
+    onTogglePin?: () => void;
+    isPinned?: boolean;
 }
 
-export const GuideCard: React.FC<GuideCardProps> = ({ guide, onPress }) => {
+export const GuideCard: React.FC<GuideCardProps> = ({ guide, onPress, onTogglePin, isPinned = false }) => {
     const calculateReadTime = (guide: Guide): number => {
         // Estimate read time: ~200 words per minute
         const words = (
@@ -28,10 +31,21 @@ export const GuideCard: React.FC<GuideCardProps> = ({ guide, onPress }) => {
     return (
         <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.7}>
             <View style={styles.content}>
-                {/* Title: Semibold, 18px */}
-                <Text style={styles.title} numberOfLines={2}>
-                    {guide.title}
-                </Text>
+                <View style={styles.headerRow}>
+                    {/* Title: Semibold, 18px */}
+                    <Text style={styles.title} numberOfLines={2}>
+                        {guide.title}
+                    </Text>
+                    {onTogglePin && (
+                        <TouchableOpacity onPress={onTogglePin} style={styles.pinButton}>
+                            <Pin
+                                size={18}
+                                color={isPinned ? colors.primary : colors.textSecondary}
+                                fill={isPinned ? colors.primary : 'transparent'}
+                            />
+                        </TouchableOpacity>
+                    )}
+                </View>
 
                 {/* Snippet: 2-line max */}
                 <Text style={styles.summary} numberOfLines={2}>
@@ -64,12 +78,23 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         paddingVertical: 8,
     },
-    title: {
-        fontSize: 18, // Explicit request
-        fontWeight: '600', // Semibold
-        color: colors.text,
+    headerRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
         marginBottom: 6,
-        lineHeight: 24, // Comfortable reading
+    },
+    title: {
+        flex: 1, // Allow title to take up text space
+        fontSize: 18,
+        fontWeight: '600',
+        color: colors.text,
+        lineHeight: 24,
+        marginRight: 8, // Space for pin
+    },
+    pinButton: {
+        padding: 4,
+        marginTop: -4, // Optical alignment
     },
     summary: {
         fontSize: textStyles.bodySmall.fontSize,

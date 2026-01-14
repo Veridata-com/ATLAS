@@ -28,6 +28,7 @@ export interface Guide {
     tags: string[];
     createdAt: string;
     evidenceLevel?: 'High' | 'Medium' | 'Low'; // Added for UI refinement
+    isPinned?: boolean;
 }
 
 export interface SearchResult {

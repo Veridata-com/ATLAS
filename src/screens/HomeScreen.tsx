@@ -7,11 +7,12 @@ import { GuideCard } from '../components/GuideCard';
 import { Guide, SearchResult, Category } from '../data/types';
 import { getCachedGuides } from '../data/database';
 import { searchGuides, getPopularGuides, getRecentlyAddedGuides } from '../services/searchService';
-import { getAllSavedGuides } from '../services/storageService';
+import { getAllSavedGuides, getPinnedGuideIds, pinGuide, unpinGuide } from '../services/storageService';
 import { canPerformSearch, incrementSearchCount } from '../services/tierService';
 import { syncGuidesToCache } from '../services/supabaseService';
 import { colors } from '../styles/colors';
 import { textStyles } from '../styles/typography';
+import { CompactGuideCard } from '../components/CompactGuideCard';
 
 export const HomeScreen: React.FC = () => {
     const navigation = useNavigation<any>();
@@ -20,6 +21,7 @@ export const HomeScreen: React.FC = () => {
     const [popularGuides, setPopularGuides] = useState<Guide[]>([]);
     const [recentGuides, setRecentGuides] = useState<Guide[]>([]);
     const [savedGuides, setSavedGuides] = useState<Guide[]>([]);
+    const [pinnedGuideIds, setPinnedGuideIds] = useState<string[]>([]);
     const [allGuides, setAllGuides] = useState<Guide[]>([]);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -55,7 +57,19 @@ export const HomeScreen: React.FC = () => {
 
     const loadSavedGuides = async () => {
         const saved = await getAllSavedGuides();
-        setSavedGuides(saved.slice(0, 3));
+        const pinned = await getPinnedGuideIds();
+        setSavedGuides(saved);
+        setPinnedGuideIds(pinned);
+    };
+
+    const handleTogglePin = async (guide: Guide) => {
+        const isPinned = pinnedGuideIds.includes(guide.id);
+        if (isPinned) {
+            await unpinGuide(guide.id);
+        } else {
+            await pinGuide(guide.id);
+        }
+        await loadSavedGuides(); // Reload to update UI
     };
 
     const handleRefresh = async () => {
@@ -167,30 +181,76 @@ export const HomeScreen: React.FC = () => {
                 showsVerticalScrollIndicator={false}
             >
                 {!searchQuery && (
-                    <View style={styles.categoriesContainer}>
-                        <ScrollView
-                            horizontal
-                            showsHorizontalScrollIndicator={false}
-                            contentContainerStyle={styles.categoriesContent}
-                        >
-                            {Object.values(Category).map((category) => (
-                                <TouchableOpacity
-                                    key={category}
-                                    style={styles.categoryChip}
-                                    onPress={() => navigation.navigate('Categories', { screen: 'CategoriesMain', params: { initialCategory: category } })}
-                                >
-                                    <Text style={styles.categoryChipText}>{category}</Text>
-                                </TouchableOpacity>
-                            ))}
-                        </ScrollView>
-                    </View>
+                    <>
+                        {/* My Protocol Stack (Pinned) */}
+                        {pinnedGuideIds.length > 0 && (
+                            <View style={styles.section}>
+                                <Text style={styles.sectionTitle}>My Protocol Stack</Text>
+                                {savedGuides
+                                    .filter(g => pinnedGuideIds.includes(g.id))
+                                    .map(guide => (
+                                        <CompactGuideCard
+                                            key={guide.id}
+                                            guide={guide}
+                                            onPress={() => handleGuidePress(guide)}
+                                            onUnpin={() => handleTogglePin(guide)}
+                                        />
+                                    ))
+                                }
+                            </View>
+                        )}
+
+                        <View style={styles.categoriesContainer}>
+                            <ScrollView
+                                horizontal
+                                showsHorizontalScrollIndicator={false}
+                                contentContainerStyle={styles.categoriesContent}
+                            >
+                                {Object.values(Category).map((category) => (
+                                    <TouchableOpacity
+                                        key={category}
+                                        style={styles.categoryChip}
+                                        onPress={() => navigation.navigate('Categories', { screen: 'CategoriesMain', params: { initialCategory: category } })}
+                                    >
+                                        <Text style={styles.categoryChipText}>{category}</Text>
+                                    </TouchableOpacity>
+                                ))}
+                            </ScrollView>
+                        </View>
+
+                        {/* Saved Resources (Unpinned) */}
+                        {(() => {
+                            const unpinned = savedGuides.filter(g => !pinnedGuideIds.includes(g.id));
+                            if (unpinned.length === 0) return null;
+                            return (
+                                <View style={styles.section}>
+                                    <Text style={styles.sectionTitle}>Saved Resources</Text>
+                                    {unpinned.map((guide) => (
+                                        <GuideCard
+                                            key={guide.id}
+                                            guide={guide}
+                                            onPress={() => handleGuidePress(guide)}
+                                            onTogglePin={() => handleTogglePin(guide)}
+                                            isPinned={false}
+                                        />
+                                    ))}
+                                </View>
+                            );
+                        })()}
+                    </>
                 )}
 
                 {searchQuery && searchResults.length > 0 && (
                     <View style={styles.section}>
                         <Text style={styles.sectionTitle}>Search Results</Text>
                         {searchResults.map((result) => (
-                            <GuideCard key={result.guide.id} guide={result.guide} onPress={() => handleGuidePress(result.guide)} />
+                            <GuideCard
+                                key={result.guide.id}
+                                guide={result.guide}
+                                onPress={() => handleGuidePress(result.guide)}
+                                onTogglePin={() => handleTogglePin(result.guide)}
+                                isPinned={pinnedGuideIds.includes(result.guide.id)}
+                            />
                         ))}
                     </View>
                 )}
@@ -202,12 +262,6 @@ export const HomeScreen: React.FC = () => {
                             Try: sleep, stress, endurance...
                         </Text>
                     </View>
-                )}
-
-                {!searchQuery && (
-                    <>
-                        {renderSection('Saved guides', savedGuides)}
-                    </>
                 )}
             </ScrollView>
         </View>
