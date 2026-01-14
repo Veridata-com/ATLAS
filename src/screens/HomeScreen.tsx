@@ -241,7 +241,7 @@ export const HomeScreen: React.FC = () => {
                     </>
                 )}
 
-                {searchQuery && searchResults.length > 0 && (
+                {!!searchQuery && searchResults.length > 0 && (
                     <View style={styles.section}>
                         <Text style={styles.sectionTitle}>Search Results</Text>
                         {searchResults.map((result) => (
@@ -256,7 +256,7 @@ export const HomeScreen: React.FC = () => {
                     </View>
                 )}
 
-                {searchQuery && searchResults.length === 0 && (
+                {!!searchQuery && searchResults.length === 0 && (
                     <View style={styles.emptyState}>
                         <Text style={styles.emptyText}>No guides found for "{searchQuery}"</Text>
                         <Text style={[styles.emptyText, { marginTop: 8, opacity: 0.7 }]}>
