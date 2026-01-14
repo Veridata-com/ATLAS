@@ -27,6 +27,7 @@ export interface Guide {
     category: Category;
     tags: string[];
     createdAt: string;
+    evidenceLevel?: 'High' | 'Medium' | 'Low'; // Added for UI refinement
 }
 
 export interface SearchResult {

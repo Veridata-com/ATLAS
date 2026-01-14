@@ -126,69 +126,91 @@ export const HomeScreen: React.FC = () => {
         );
     }
 
+    const [isScrolled, setIsScrolled] = useState(false);
+
+    const handleScroll = (event: any) => {
+        const offsetY = event.nativeEvent.contentOffset.y;
+        if (offsetY > 10 && !isScrolled) {
+            setIsScrolled(true);
+        } else if (offsetY <= 10 && isScrolled) {
+            setIsScrolled(false);
+        }
+    };
+
     return (
-        <ScrollView
-            style={styles.container}
-            contentContainerStyle={styles.content}
-            refreshControl={
-                <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} tintColor={colors.primary} />
-            }
-        >
-            <View style={styles.headerContainer}>
-                <View>
-                    <Text style={styles.header}>What do you want to improve?</Text>
-                    <Text style={styles.subtext}>Science-backed guides. No noise.</Text>
+        <View style={styles.container}>
+            {/* Sticky Header Container */}
+            <View style={[
+                styles.stickyHeader,
+                isScrolled && styles.stickyHeaderBorder
+            ]}>
+                <View style={styles.headerContainer}>
+                    <View>
+                        <Text style={styles.header}>What do you want to improve?</Text>
+                        <Text style={styles.subtext}>Science-backed guides. No noise.</Text>
+                    </View>
+                    <TouchableOpacity onPress={() => navigation.navigate('Settings')} style={styles.settingsButton}>
+                        <Settings color={colors.text} size={24} />
+                    </TouchableOpacity>
                 </View>
-                <TouchableOpacity onPress={() => navigation.navigate('Settings')} style={styles.settingsButton}>
-                    <Settings color={colors.text} size={24} />
-                </TouchableOpacity>
+                <SearchBar onSearch={handleSearch} value={searchQuery} />
             </View>
-            <SearchBar onSearch={handleSearch} value={searchQuery} />
 
-            {!searchQuery && (
-                <View style={styles.categoriesContainer}>
-                    <ScrollView
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={styles.categoriesContent}
-                    >
-                        {Object.values(Category).map((category) => (
-                            <TouchableOpacity
-                                key={category}
-                                style={styles.categoryChip}
-                                onPress={() => navigation.navigate('Categories', { screen: 'CategoriesMain', params: { initialCategory: category } })}
-                            >
-                                <Text style={styles.categoryChipText}>{category}</Text>
-                            </TouchableOpacity>
+            {/* Main Content */}
+            <ScrollView
+                contentContainerStyle={[styles.content, { paddingTop: 140 }]} // Add padding for absolute header
+                refreshControl={
+                    <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} tintColor={colors.primary} />
+                }
+                onScroll={handleScroll}
+                scrollEventThrottle={16}
+                showsVerticalScrollIndicator={false}
+            >
+                {!searchQuery && (
+                    <View style={styles.categoriesContainer}>
+                        <ScrollView
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            contentContainerStyle={styles.categoriesContent}
+                        >
+                            {Object.values(Category).map((category) => (
+                                <TouchableOpacity
+                                    key={category}
+                                    style={styles.categoryChip}
+                                    onPress={() => navigation.navigate('Categories', { screen: 'CategoriesMain', params: { initialCategory: category } })}
+                                >
+                                    <Text style={styles.categoryChipText}>{category}</Text>
+                                </TouchableOpacity>
+                            ))}
+                        </ScrollView>
+                    </View>
+                )}
+
+                {searchQuery && searchResults.length > 0 && (
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>Search Results</Text>
+                        {searchResults.map((result) => (
+                            <GuideCard key={result.guide.id} guide={result.guide} onPress={() => handleGuidePress(result.guide)} />
                         ))}
-                    </ScrollView>
-                </View>
-            )}
+                    </View>
+                )}
 
-            {searchQuery && searchResults.length > 0 && (
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Search Results</Text>
-                    {searchResults.map((result) => (
-                        <GuideCard key={result.guide.id} guide={result.guide} onPress={() => handleGuidePress(result.guide)} />
-                    ))}
-                </View>
-            )}
+                {searchQuery && searchResults.length === 0 && (
+                    <View style={styles.emptyState}>
+                        <Text style={styles.emptyText}>No guides found for "{searchQuery}"</Text>
+                        <Text style={[styles.emptyText, { marginTop: 8, opacity: 0.7 }]}>
+                            Try: sleep, stress, endurance...
+                        </Text>
+                    </View>
+                )}
 
-            {searchQuery && searchResults.length === 0 && (
-                <View style={styles.emptyState}>
-                    <Text style={styles.emptyText}>No guides found for "{searchQuery}"</Text>
-                    <Text style={[styles.emptyText, { marginTop: 8, opacity: 0.7 }]}>
-                        Try: sleep, stress, endurance...
-                    </Text>
-                </View>
-            )}
-
-            {!searchQuery && (
-                <>
-                    {renderSection('Saved guides', savedGuides)}
-                </>
-            )}
-        </ScrollView>
+                {!searchQuery && (
+                    <>
+                        {renderSection('Saved guides', savedGuides)}
+                    </>
+                )}
+            </ScrollView>
+        </View>
     );
 };
 
@@ -199,24 +221,28 @@ const styles = StyleSheet.create({
     },
     content: {
         padding: 20,
-        paddingTop: 60,
+        paddingTop: 140, // Padding for sticky header
+        paddingBottom: 40,
     },
-    loadingContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
+    stickyHeader: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 100,
+        padding: 20,
+        paddingBottom: 10,
         backgroundColor: colors.background,
     },
-    loadingText: {
-        marginTop: 16,
-        fontSize: textStyles.body.fontSize,
-        color: colors.textSecondary,
+    stickyHeaderBorder: {
+        borderBottomWidth: 1,
+        borderBottomColor: colors.border,
     },
     headerContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'flex-start',
-        marginBottom: 32,
+        marginBottom: 16,
     },
     header: {
         fontSize: textStyles.h2.fontSize,
@@ -230,28 +256,10 @@ const styles = StyleSheet.create({
         color: colors.textSecondary,
     },
     settingsButton: {
-        marginTop: 4,
-    },
-    section: {
-        marginBottom: 40,
-    },
-    sectionTitle: {
-        fontSize: textStyles.h3.fontSize,
-        fontWeight: textStyles.h3.fontWeight as any,
-        color: colors.text,
-        marginBottom: 16,
-    },
-    emptyState: {
-        padding: 40,
-        alignItems: 'center',
-    },
-    emptyText: {
-        fontSize: textStyles.body.fontSize,
-        color: colors.textSecondary,
-        textAlign: 'center',
+        padding: 4,
     },
     categoriesContainer: {
-        marginBottom: 32,
+        marginBottom: 24,
     },
     categoriesContent: {
         paddingRight: 20,
@@ -269,5 +277,35 @@ const styles = StyleSheet.create({
         fontSize: textStyles.bodySmall.fontSize,
         fontWeight: textStyles.label.fontWeight as any,
         color: colors.text,
+    },
+    section: {
+        marginBottom: 32,
+    },
+    sectionTitle: {
+        fontSize: textStyles.h3.fontSize,
+        fontWeight: textStyles.h3.fontWeight as any,
+        color: colors.text,
+        marginBottom: 16,
+        marginLeft: 4,
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    loadingText: {
+        marginTop: 12,
+        color: colors.textSecondary,
+        fontSize: textStyles.body.fontSize,
+    },
+    emptyState: {
+        alignItems: 'center',
+        marginTop: 40,
+        paddingHorizontal: 32,
+    },
+    emptyText: {
+        fontSize: textStyles.body.fontSize,
+        color: colors.textSecondary,
+        textAlign: 'center',
     },
 });
