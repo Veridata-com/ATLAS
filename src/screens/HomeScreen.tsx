@@ -172,6 +172,7 @@ export const HomeScreen: React.FC = () => {
 
             {/* Main Content */}
             <ScrollView
+                style={{ flex: 1 }}
                 contentContainerStyle={[styles.content, { paddingTop: 140 }]} // Add padding for absolute header
                 refreshControl={
                     <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} tintColor={colors.primary} />
