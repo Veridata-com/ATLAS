@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AppNavigator } from './src/navigation/AppNavigator';
 import { initDatabase } from './src/data/database';
 import { syncGuidesToCache, isSupabaseConfigured } from './src/services/supabaseService';
@@ -64,10 +65,10 @@ export default function App() {
     }
 
     return (
-        <>
+        <SafeAreaProvider>
             <StatusBar style="dark" />
             <AppNavigator />
-        </>
+        </SafeAreaProvider>
     );
 }
 
