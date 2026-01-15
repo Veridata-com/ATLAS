@@ -25,6 +25,7 @@ export const HomeScreen: React.FC = () => {
     const [allGuides, setAllGuides] = useState<Guide[]>([]);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [isScrolled, setIsScrolled] = useState(false);
 
     useEffect(() => {
         loadData();
@@ -140,7 +141,7 @@ export const HomeScreen: React.FC = () => {
         );
     }
 
-    const [isScrolled, setIsScrolled] = useState(false);
+
 
     const handleScroll = (event: any) => {
         const offsetY = event.nativeEvent.contentOffset.y;
