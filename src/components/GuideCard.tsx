@@ -42,7 +42,6 @@ export const GuideCard: React.FC<GuideCardProps> = ({ guide, onPress, onTogglePi
                             <Pin
                                 size={18}
                                 color={isPinned ? colors.primary : colors.textSecondary}
-                                fill={isPinned ? colors.primary : 'transparent'}
                             />
                         </TouchableOpacity>
                     )}

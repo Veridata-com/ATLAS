@@ -16,7 +16,7 @@ export const CompactGuideCard: React.FC<CompactGuideCardProps> = ({ guide, onPre
         <TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={0.7}>
             <View style={styles.leftContent}>
                 <TouchableOpacity onPress={onUnpin} style={styles.pinButton}>
-                    <Pin size={16} color={colors.primary} fill={colors.primary} />
+                    <Pin size={16} color={colors.primary} />
                 </TouchableOpacity>
                 <Text style={styles.title} numberOfLines={1}>
                     {guide.title}

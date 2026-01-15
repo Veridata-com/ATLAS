@@ -7,6 +7,7 @@ import { initDatabase } from './src/data/database';
 import { syncGuidesToCache, isSupabaseConfigured } from './src/services/supabaseService';
 import { colors } from './src/styles/colors';
 import { textStyles } from './src/styles/typography';
+import { ErrorBoundary } from './src/components/ErrorBoundary';
 
 export default function App() {
     const [isInitializing, setIsInitializing] = useState(true);
@@ -66,8 +67,10 @@ export default function App() {
 
     return (
         <SafeAreaProvider>
-            <StatusBar style="dark" />
-            <AppNavigator />
+            <ErrorBoundary>
+                <StatusBar style="dark" />
+                <AppNavigator />
+            </ErrorBoundary>
         </SafeAreaProvider>
     );
 }
