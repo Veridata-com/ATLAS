@@ -15,12 +15,13 @@ interface GuideCardProps {
 export const GuideCard: React.FC<GuideCardProps> = ({ guide, onPress, onTogglePin, isPinned = false }) => {
     const calculateReadTime = (guide: Guide): number => {
         // Estimate read time: ~200 words per minute
-        const words = (
-            guide.summary +
-            guide.whatScienceSays.join(' ') +
-            guide.whatToDo.join(' ') +
-            (guide.whoThisIsFor || '')
-        ).split(/\s+/).length;
+        // Defensive checks for arrays to prevent crash if data is malformed
+        const summary = guide.summary || '';
+        const science = (guide.whatScienceSays || []).join(' ');
+        const todo = (guide.whatToDo || []).join(' ');
+        const who = guide.whoThisIsFor || '';
+
+        const words = (summary + science + todo + who).split(/\s+/).length;
 
         return Math.max(1, Math.ceil(words / 200));
     };
